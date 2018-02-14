@@ -63,6 +63,7 @@ public class ImageLoader {
         if (TextUtils.isEmpty(url)) {
             throw new InvalidParameterException("URL is empty!");
         }
+        imageView.setTag(url);
         // Can you think of a way to improve loading of bitmaps
         // that have already been loaded previously??
         //?? i have implemented LRU Cache to serve them from memory if Already Loaded
@@ -76,7 +77,8 @@ public class ImageLoader {
                 public void onResponseReceived(String url, byte[] data, String charset) {
                     Bitmap bitmap= ImageUtils.convertToBitmap(data);
                     addBitmapToMemoryCache(url, bitmap);
-                    ImageUtils.setImageView(imageView, bitmap);
+                    if(imageView.getTag().equals(url))
+                        ImageUtils.setImageView(imageView, bitmap);
                 }
 
                 @Override

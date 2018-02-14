@@ -25,7 +25,6 @@ public class NetworkManager implements NetworkCallBack{
 
 
         }else{
-
             queue.get(url).addNetworkCallBack(callBack);
         }
 

@@ -10,7 +10,7 @@ public class AppManager {
 
     private static AppManager appManager;
 
-    public static AppManager getInstance(){
+    public synchronized static AppManager getInstance(){
         if(appManager==null)
             appManager=new AppManager();
         return appManager;
