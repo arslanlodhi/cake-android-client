@@ -1,9 +1,15 @@
 package com.waracle.androidtest;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,16 +36,21 @@ public class MainActivity extends AppCompatActivity {
 
     private static String JSON_URL = "https://gist.githubusercontent.com/hart88/198f29ec5114a3ec3460/" +
             "raw/8dd19a88f9b8d24c23d9960f3300d0c917a4f07c/cake.json";
+    private static final String TAG_PLACE_HOLDER_FRAGMENT = "PlaceholderFragment";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new PlaceholderFragment(),TAG_PLACE_HOLDER_FRAGMENT)
                     .commit();
         }
+
+
     }
 
     @Override
@@ -71,20 +82,41 @@ public class MainActivity extends AppCompatActivity {
      * Improve any performance issues
      * Use good coding practices to make code more secure
      */
-    public static class PlaceholderFragment extends ListFragment {
+    public static class PlaceholderFragment extends Fragment {
 
         private static final String TAG = PlaceholderFragment.class.getSimpleName();
+        public final static String LIST_STATE_KEY = "recycler_list_state";
 
-        private ListView mListView;
+        RecyclerView recyclerView;
         private MyAdapter mAdapter;
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
+        Parcelable listState;
+
 
         public PlaceholderFragment() { /**/ }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            listState = layoutManager.onSaveInstanceState();
+            outState.putParcelable(LIST_STATE_KEY, listState);
+            super.onSaveInstanceState(outState);
+
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            if (listState != null) {
+                layoutManager.onRestoreInstanceState(listState);
+            }
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            mListView = (ListView) rootView.findViewById(R.id.list);
+            recyclerView=rootView.findViewById(R.id.rc_view);
+            setRetainInstance(true);
             return rootView;
         }
 
@@ -94,14 +126,39 @@ public class MainActivity extends AppCompatActivity {
 
             // Create and set the list adapter.
             mAdapter = new MyAdapter();
-            mListView.setAdapter(mAdapter);
-
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(mAdapter);
             // Load data from net.
-            try {
-                JSONArray array = loadData();
+            new LoadData().execute("");
+
+        }
+
+        private class LoadData extends AsyncTask<String, Void, JSONArray> {
+            @Override
+            protected JSONArray doInBackground(String... params) {
+                JSONArray array=null;
+                try {
+                 array = loadData();
+
+                } catch (IOException | JSONException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                return array;
+            }
+
+            @Override
+            protected void onPostExecute(JSONArray array) {
                 mAdapter.setItems(array);
-            } catch (IOException | JSONException e) {
-                Log.e(TAG, e.getMessage());
+
+            }
+
+            @Override
+            protected void onPreExecute() {
+            }
+
+            @Override
+            protected void onProgressUpdate(Void... values) {
+
             }
         }
 
@@ -151,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
             return "UTF-8";
         }
 
-        private class MyAdapter extends BaseAdapter {
+        private class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
             // Can you think of a better way to represent these items???
             private JSONArray mItems;
@@ -166,12 +223,28 @@ public class MainActivity extends AppCompatActivity {
                 mImageLoader = new ImageLoader();
             }
 
+            public class ViewHolder extends RecyclerView.ViewHolder {
+
+                TextView title,desc;
+                ImageView image;
+
+                public ViewHolder(View itemView) {
+                    super(itemView);
+                     title = (TextView) itemView.findViewById(R.id.title);
+                     desc = (TextView) itemView.findViewById(R.id.desc);
+                     image = (ImageView) itemView.findViewById(R.id.image);
+                }
+
+            }
+
+
+
             @Override
-            public int getCount() {
+            public int getItemCount() {
                 return mItems.length();
             }
 
-            @Override
+
             public Object getItem(int position) {
                 try {
                     return mItems.getJSONObject(position);
@@ -182,34 +255,32 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public long getItemId(int position) {
-                return 0;
+            public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                Context context = parent.getContext();
+                LayoutInflater inflater = LayoutInflater.from(context);
+
+                View root = inflater.inflate(R.layout.list_item_layout, parent, false);
+                MyAdapter.ViewHolder viewHolder = new MyAdapter.ViewHolder(root);
+                return viewHolder;
+
             }
 
-            @SuppressLint("ViewHolder")
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                LayoutInflater inflater = LayoutInflater.from(getActivity());
-                View root = inflater.inflate(R.layout.list_item_layout, parent, false);
-                if (root != null) {
-                    TextView title = (TextView) root.findViewById(R.id.title);
-                    TextView desc = (TextView) root.findViewById(R.id.desc);
-                    ImageView image = (ImageView) root.findViewById(R.id.image);
-                    try {
-                        JSONObject object = (JSONObject) getItem(position);
-                        title.setText(object.getString("title"));
-                        desc.setText(object.getString("desc"));
-                        mImageLoader.load(object.getString("image"), image);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+            public void onBindViewHolder(MyAdapter.ViewHolder holder, int position) {
+                try {
+                    JSONObject object = (JSONObject) getItem(position);
 
-                return root;
+                    holder.title.setText(object.getString("title"));
+                    holder.desc.setText(object.getString("desc"));
+                    mImageLoader.load(object.getString("image"), holder.image);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             public void setItems(JSONArray items) {
                 mItems = items;
+                notifyDataSetChanged();
             }
         }
     }
