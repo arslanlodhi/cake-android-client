@@ -11,6 +11,11 @@ public class NetworkManager implements NetworkCallBack{
 
     HashMap<String,NetworkCallProcess> queue=new HashMap<>();
 
+    /**
+     * Enqueue Server call and creates a network process
+     * @param url String url
+     * @param callBack callBack reference
+     */
     public synchronized  void enqueue(String url, NetworkCallBack callBack){
 
         if(!queue.containsKey(url))
@@ -30,6 +35,10 @@ public class NetworkManager implements NetworkCallBack{
 
     }
 
+    /**
+     * Dequeue Server call and cancel if request is in progress
+     * @param url String url
+     */
     public void dequeueRequest(String url){
         if(queue.containsKey(url))
         {

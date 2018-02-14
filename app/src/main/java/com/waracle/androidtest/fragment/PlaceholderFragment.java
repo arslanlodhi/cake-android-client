@@ -1,8 +1,5 @@
 package com.waracle.androidtest.fragment;
 
-/**
- * Created by arslanlodhi on 2/14/18.
- */
 
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -80,7 +77,9 @@ public class PlaceholderFragment extends Fragment {
 
 
 
-
+    /**
+     * Load DataFrom Server using NetworkManager
+     */
     private void loadData() {
         AppManager.getInstance().getNetworkManager().enqueue(AppUtils.BASE_URL, new NetworkCallBack() {
             @Override

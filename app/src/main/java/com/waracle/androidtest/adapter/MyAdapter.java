@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     // Can you think of a better way to represent these items???
+    // changed JSONArray into ArraList of CakeModel.
     private ArrayList<CakeModel> mItems;
     private ImageLoader mImageLoader;
 
@@ -34,27 +35,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         mImageLoader = new ImageLoader(AppManager.getInstance().getNetworkManager());
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView title,desc;
-        ImageView image;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            desc = (TextView) itemView.findViewById(R.id.desc);
-            image = (ImageView) itemView.findViewById(R.id.image);
-        }
-
-    }
-
-
-
     @Override
     public int getItemCount() {
         return mItems.size();
     }
-
 
     public CakeModel getItem(int position) {
         return mItems.get(position);
@@ -79,8 +63,26 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         mImageLoader.load(object.getImage(), holder.image);
     }
 
+    /**
+     * set items and Refresh Adapter
+     * @param items list of cake models
+     */
     public void setItems(ArrayList<CakeModel> items) {
         mItems = items;
         notifyDataSetChanged();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        TextView title,desc;
+        ImageView image;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            title = (TextView) itemView.findViewById(R.id.title);
+            desc = (TextView) itemView.findViewById(R.id.desc);
+            image = (ImageView) itemView.findViewById(R.id.image);
+        }
+
     }
 }

@@ -75,6 +75,10 @@ class NetworkCallProcess extends AsyncTask<String, Void, byte[]> {
 
     }
 
+    /**
+     * Process server request and return bytes
+     * @param urlStr String url
+     */
     private byte[] processServerRequest(String urlStr) throws IOException, JSONException {
         URL url = new URL(urlStr);
         Log.e("URL", "" + urlStr);
