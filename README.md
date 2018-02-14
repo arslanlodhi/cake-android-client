@@ -4,12 +4,13 @@ This is my First submission, Where I have’t changed the source a lot. Fixed th
 
 # Libraries I might have used
 As per the requirement Its a sensitive Project and i was instructed not to use third party libraries, But if i have got the chance to use 3rd party libraries. I might have used libraries mentioned below.
-	1.	Glide {for image loading and caching}
-	2.	GSON {For Json serlization/deserialization}
-	3.	Retrofit {for HTTP , client server communication}
-	4.	RxJava {for Observer/Subscription Pattern}
-	5.	Dagger 2 {For dependencies Injection}
-	6.	Android Architecture Components {LiveData, DataBinding, MVVM}
+	
+* Glide {for image loading and caching}
+* GSON {For Json serlization/deserialization}
+* Retrofit {for HTTP , client server communication}
+* RxJava {for Observer/Subscription Pattern}
+* Dagger 2 {For dependencies Injection}
+* Android Architecture Components {LiveData, DataBinding, MVVM}
 
 
 # Explanation
@@ -31,4 +32,3 @@ Network Manager gets initiated one time in a Singleton class managers/AppManager
 * Revamped Image loader class and use Network manager class init.
 * Updated the code of input stream reading. Can be done in a simple way.
 * Refactored the Project structure, And divided the code into proper hierarchy. Not a good practice to write the whole code into a single file.
-
