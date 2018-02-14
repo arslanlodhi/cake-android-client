@@ -1,12 +1,12 @@
 # cake-android-client
 
-This is my First submission, Where I have’t changed the source a lot. Fixed the Bugs and addressed the issues mentioned in the comments. Although I have formatted and restructured the code.
+This is my first submission, Where I have’t changed the source a lot. Fixed the Bugs and addressed the issues mentioned in the comments. Although I have formatted and restructured the code.
 
 # Libraries I might have used
 As per the requirement Its a sensitive Project and i was instructed not to use third party libraries, But if i have got the chance to use 3rd party libraries. I might have used libraries mentioned below.
 	
 * Glide {for image loading and caching}
-* GSON {For Json serlization/deserialization}
+* GSON {For Json serialization/deserialization}
 * Retrofit {for HTTP , client server communication}
 * RxJava {for Observer/Subscription Pattern}
 * Dagger 2 {For dependencies Injection}
@@ -21,10 +21,10 @@ Network Manager gets initiated one time in a Singleton class managers/AppManager
 
 # Fixes
 * Updated Gradle file and Manifest, as the targeted SDK was old.
-* Extended with ListFragment and have the wrong id in xml. I have to changed the ListFragment to simple fragment and changed the ListView to RecyclerView. Fixed the issue.
+* Fragment was extended with ListFragment and have the wrong id of ListView in xml. I have changed the ListFragment to simple Fragment and changed the ListView to RecyclerView. Fixed the issue.
 * Application Does’t have Internet Permission, So it was crashing because of it. Permission added in Manifest
-* XML View Relative Layout Issue in row. It has the issue in the Childs of relative layout causing the text and image over lapping. Fixed the toRightof Rule.
-* Did’t contain the ViewHolder pattern in MyAdapter, causing views to draw every time when scroll, Changed it to RecyclerView.Adapter and implemented ViewHolder pattern.
+* XML View Relative Layout issue in row. It has the issue in the childs of RelativeLayout causing the text and image over lapping. Fixed the toRightof Rule.
+* Did’t contain the ViewHolder pattern in MyAdapter, causing views to draw every time while scrolling, Changed it to RecyclerView.Adapter and implemented ViewHolder pattern.
 * Change the adapter binding with ArrayList of CakeModel.class, Instead of JSONArray.
 * Implemented LRU cache to prevent Image loading every time from network. And also implemented logic to not to load images from Network if already in  progress.
 * Handled Screen orientation, by retaining instance of the Fragment.
